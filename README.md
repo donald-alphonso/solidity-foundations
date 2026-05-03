@@ -12,7 +12,7 @@ Module 1, Semaine 1 : Counter étendu avec ownership, events, customs errors.
 git clone <repo-url>
 cd solidity-foundations
 forge install
-forge buid
+forge build
 forge test
 \`\`\`
 

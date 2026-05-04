@@ -23,7 +23,7 @@ forge create src/Counter.sol:Counter --rpc-url http://localhost:8545 --private-k
 \`\`\`
 
 ## Coverage
-forge coverage -> 85.71%
+forge coverage -> 100%
 
 ## Notes d'apprentissage
 - immutable : owner -> fixé au constructeur et ne change jamais -> stocké dans le byte code -> moins cher en gaz (const en js)

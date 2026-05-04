@@ -45,6 +45,12 @@ contract CounterTest is Test {
         counter.setNumber(42);
     }
 
+    function test_DecrementDecreasesNumber() public {
+        counter.setNumber(2);
+        counter.decrement();
+        assertEq(counter.number(), 1);
+    }
+
     function test_Increment() public {
         counter.increment();
         assertEq(counter.number(), 1);

@@ -34,5 +34,4 @@ contract Counter {
         emit NumberChanged(number, number - 1, msg.sender);
         number--;
     }
-
 }

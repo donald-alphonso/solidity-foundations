@@ -80,6 +80,46 @@ contract TipJar {
         emit TipReceived(msg.sender, msg.value, "(no message)");
     }
 
+    // Retourne les N derniers tips, du plus récent au plus ancien.
+    // Si N > tipCount, retourne tous les tips.amount
+    function getRecentTips(uint256 n) external view returns (Tip[] memory) {
+        uint256 size = n;
+        if (n > tips.length) {
+            size = tips.length;
+        }
+        
+        Tip[] memory result = new Tip[](size);
+
+        for (uint256 i = 1; i < size; i++) {
+            result[i - 1] = tips[tips.length - 1];
+        }
+        
+        return result;
+    }
+
+    // Retourne l'adresse du plus gros tipper et son montant total.
+    // Si aucun tip, retourne (address(0), 0).
+    function topTipper() external view returns (address, uint256) {
+        if (tips.length == 0) {
+            return (address(0), 0);
+        }
+
+        address best;
+        uint256 highest;
+
+        for (uint256 i =0; i < tips.length; i++) {
+            address current = tips[i].from;
+            uint256 total = tipsByAddress[current];
+
+            if (total > highest) {
+                highest = total;
+                best = current;
+            }
+        }
+
+        return (best, highest);
+    }
+
     // Fallback : appelé si la signature ne match aucune fonction
     fallback() external payable {
         revert("Unknown function called");

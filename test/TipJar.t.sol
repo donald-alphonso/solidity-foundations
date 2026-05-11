@@ -4,6 +4,18 @@ pragma solidity ^0.8.24;
 import {Test} from "forge-std/Test.sol";
 import {TipJar} from "../src/TipJar.sol";
 
+contract RejectsEth {
+    TipJar public jar;
+
+    constructor() {
+        jar = new TipJar();
+    }
+
+    function callWithdraw() external {
+        jar.withdraw();
+    }
+}
+
 contract TipJarTest is Test {
     TipJar public jar;
     address public owner;
@@ -54,6 +66,32 @@ contract TipJarTest is Test {
 
         assertEq(ownerBalanceAfter - ownerBalanceBefore, 2 ether);
         assertEq(address(jar).balance, 0);
+    }
+
+    function test_WithdrawRevertsWhenTransferFails() public {
+        RejectsEth rejector = new RejectsEth();
+        TipJar jar2 = rejector.jar();
+
+        vm.deal(alice, 1 ether);
+        vm.prank(alice);
+        jar2.tip{value: 1 ether}("hi");
+
+        vm.expectRevert(TipJar.TransferFailed.selector);
+        rejector.callWithdraw();
+    }
+
+    function test_WithdrawRevertsWhenBalanceIsZero() public {
+        vm.expectRevert(TipJar.NoTipsToWithdraw.selector);
+        jar.withdraw();
+    }
+
+    function test_GetTipCountReturnsTipsLength() public {
+        assertEq(jar.getTipCount(), 0);
+
+        vm.prank(alice);
+        jar.tip{value: 1 ether}("hi");
+
+        assertEq(jar.getTipCount(), 1);
     }
 
     function test_WithdrawRevertsForNonOwner() public {

@@ -90,8 +90,8 @@ contract TipJar {
         
         Tip[] memory result = new Tip[](size);
 
-        for (uint256 i = 1; i < size; i++) {
-            result[i - 1] = tips[tips.length - 1];
+        for (uint256 i = 0; i < size; i++) {
+            result[i] = tips[tips.length - 1 - i];
         }
         
         return result;

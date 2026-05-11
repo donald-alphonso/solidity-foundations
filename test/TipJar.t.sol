@@ -67,7 +67,7 @@ contract TipJarTest is Test {
 
     function test_ReceiveAcceptsRawEth() public {
         vm.prank(alice);
-        (bool success, ) = address(jar).call{value: 0.5 ether}("");
+        (bool success,) = address(jar).call{value: 0.5 ether}("");
         assertTrue(success);
         assertEq(jar.totalTips(), 0.5 ether);
         assertEq(jar.tipCount(), 1);
@@ -75,9 +75,7 @@ contract TipJarTest is Test {
 
     function test_FallbackReverts() public {
         vm.prank(alice);
-        (bool success, ) = address(jar).call{value: 1 ether}(
-            abi.encodeWithSignature("inexistantFunction()")
-        );
+        (bool success,) = address(jar).call{value: 1 ether}(abi.encodeWithSignature("inexistantFunction()"));
         assertFalse(success);
     }
 

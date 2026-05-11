@@ -1,31 +1,23 @@
 # solidity-foundations
 
 Apprentissage progressif de Solidity et de l'écosystème Foundry.
-Module 1, Semaine 1 : Counter étendu avec ownership, events, customs errors.
+
+## Modules
+
+### M1 — Fondations EVM & Solidity
+- **S1** — Counter (ownership, events, custom errors) — coverage 100%
+- **S2** — TipJar (payable, msg.value, receive/fallback, withdraw pattern) — coverage 100%
 
 ## Stack
-- solidity ^0.8.24
+- Solidity ^0.8.24
 - Foundry (forge, cast, anvil)
 
 ## Setup
-\`\`\`bash
-git clone <repo-url>
-cd solidity-foundations
-forge install
-forge build
-forge test
-\`\`\`
+... (corrige les typos: `forge build`, "custom errors")
 
-## Déploiement local
-\`\`\`bash
-anvil # terminal 1
-forge create src/Counter.sol:Counter --rpc-url http://localhost:8545 --private-key <ANVIL_KEY> --broadcast # terminal 2
-\`\`\`
-
-## Coverage
-forge coverage -> 100%
-
-## Notes d'apprentissage
-- immutable : owner -> fixé au constructeur et ne change jamais -> stocké dans le byte code -> moins cher en gaz (const en js)
-- indexed sur les event params -> permet de filtrer les logs, côté client (wagmi, ethers, indexeurs) -> Max 3 params indexed par event
-- testFuzz_* : Foundry génére 256 inputs aléatoires -> ça trouvre des bugs qu'on ne verrait jamais avec des tests à valeurs fixes.
+## Notes d'apprentissage S2
+- `payable` : autorise une fonction à recevoir de l'ETH ; sans ce mot-clé, tout transfert revert.
+- `msg.value` : ETH attaché à la tx, en wei. Toujours raisonner en wei.
+- `receive()` vs `fallback()` : receive pour ETH pur (calldata vide), fallback pour signature inconnue.
+- Pattern `.call{value: x}("")` : envoi d'ETH moderne, forward tout le gas, checker le `success`.
+- `tx.origin` ≠ `msg.sender` : ne jamais utiliser `tx.origin` pour l'authentification.

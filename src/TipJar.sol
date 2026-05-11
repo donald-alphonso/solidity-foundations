@@ -37,12 +37,7 @@ contract TipJar {
         if (msg.value == 0) revert NoTipsToWithdraw(); // pas de tip à 0
         if (bytes(message).length == 0) revert EmptyMessage();
 
-        tips.push(Tip({
-            from: msg.sender,
-            amount: msg.value,
-            message: message,
-            timestamp: block.timestamp
-        }));
+        tips.push(Tip({from: msg.sender, amount: msg.value, message: message, timestamp: block.timestamp}));
 
         tipsByAddress[msg.sender] += msg.value;
         totalTips += msg.value;
@@ -55,7 +50,7 @@ contract TipJar {
         uint256 balance = address(this).balance;
         if (balance == 0) revert NoTipsToWithdraw();
 
-        (bool success, ) = payable(owner).call{value: balance}("");
+        (bool success,) = payable(owner).call{value: balance}("");
         if (!success) revert TransferFailed();
 
         emit Withdrawn(owner, balance);
@@ -67,12 +62,7 @@ contract TipJar {
 
     // Reçoit de l'ETH envoyé sans data (ex: wallet qui envoie juste de l'ETH)
     receive() external payable {
-        tips.push(Tip({
-            from: msg.sender,
-            amount: msg.value,
-            message: "(no message)",
-            timestamp: block.timestamp
-        }));
+        tips.push(Tip({from: msg.sender, amount: msg.value, message: "(no message)", timestamp: block.timestamp}));
         tipsByAddress[msg.sender] += msg.value;
         totalTips += msg.value;
         tipCount++;
@@ -87,13 +77,13 @@ contract TipJar {
         if (n > tips.length) {
             size = tips.length;
         }
-        
+
         Tip[] memory result = new Tip[](size);
 
         for (uint256 i = 0; i < size; i++) {
             result[i] = tips[tips.length - 1 - i];
         }
-        
+
         return result;
     }
 
@@ -107,7 +97,7 @@ contract TipJar {
         address best;
         uint256 highest;
 
-        for (uint256 i =0; i < tips.length; i++) {
+        for (uint256 i = 0; i < tips.length; i++) {
             address current = tips[i].from;
             uint256 total = tipsByAddress[current];
 
